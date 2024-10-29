@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Speed Benchmark Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white p-8 rounded-lg w-full max-w-4xl">
+        <h1 class="text-4xl font-bold mb-6 text-center text-gray-800">Language Speed Benchmark Results</h1>
+        <div class="mb-8">
+            <canvas id="benchmarkChart"></canvas>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-blue-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-2 text-blue-800">Fastest</h2>
+                <p class="text-2xl font-bold text-blue-600" id="fastest"></p>
+            </div>
+            <div class="bg-red-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-2 text-red-800">Slowest</h2>
+                <p class="text-2xl font-bold text-red-600" id="slowest"></p>
+            </div>
+            <div class="bg-green-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-2 text-green-800">Average</h2>
+                <p class="text-2xl font-bold text-green-600" id="average"></p>
+            </div>
+            <div class="bg-purple-100 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-2 text-purple-800">Median</h2>
+                <p class="text-2xl font-bold text-purple-600" id="median"></p>
+            </div>
+        </div>
+        <div class="bg-yellow-50 p-6 rounded-lg mb-8">
+            <h2 class="text-xl font-semibold mb-2 text-yellow-800">Analogy</h2>
+            <p class="text-gray-700">
+                Imagine these programming languages as cars in a race. Assembly and C are like finely-tuned Formula 1 cars, blazing through the track. Python, on the other hand, is like a comfortable family van - it may not be the fastest, but it's versatile and easy to drive. The other languages fall somewhere in between, each with its own strengths, much like different types of vehicles suited for various purposes.
+            </p>
+        </div>
+        <div class="bg-gray-50 p-6 rounded-lg">
+            <h2 class="text-xl font-semibold mb-2 text-gray-800">Test Information</h2>
+            <p class="text-gray-700">
+                Test done: to find prime numbers
+            </p>
+            <p class="text-gray-700 mt-2">
+                The benchmark test involved implementing an algorithm to find prime numbers, specifically using the Sieve of Eratosthenes method. This test evaluates the languages' performance in handling mathematical computations and array manipulations, which are common in many programming tasks.
+            </p>
+        </div>
+    </div>
+    <script>
+        const benchmarkData = {
+            "C": 0.006262,
+            "C++": 0.00591845,
+            "Java": 0.009471,
+            "Python": 0.11757183074951172,
+            "JavaScript": 0.008,
+            "Lua": 0.08236,
+            "Rust": 0.024803,
+            "Assembly": 0.004
+        };
+
+        const labels = Object.keys(benchmarkData);
+        const data = Object.values(benchmarkData);
+
+        const ctx = document.getElementById('benchmarkChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Execution Time (seconds)',
+                    data: data,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Time (seconds)'
+                        }
+                    }
+                }
+            }
+        });
+
+        const sortedData = data.slice().sort((a, b) => a - b);
+        document.getElementById('fastest').textContent = `${labels[data.indexOf(Math.min(...data))]} (${Math.min(...data).toFixed(6)}s)`;
+        document.getElementById('slowest').textContent = `${labels[data.indexOf(Math.max(...data))]} (${Math.max(...data).toFixed(6)}s)`;
+        document.getElementById('average').textContent = `${(data.reduce((a, b) => a + b, 0) / data.length).toFixed(6)}s`;
+        document.getElementById('median').textContent = `${(sortedData[(sortedData.length - 1) >> 1] + sortedData[sortedData.length >> 1]) / 2 .toFixed(6)}s`;
+    </script>
+</body>
+</html>
